@@ -25,19 +25,17 @@
   
   /* Contenedor de la venta con más espacio */
   .venta-container {
-    max-width: 600px;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+    max-width: 800px;
     height: 100vh;
-    width: 90%;
-    margin: 50px auto 50px; 
+    margin: 100px auto; /* Espacio superior para el header */
     padding: 40px;
     background-color: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex; /* Flexbox para centrar contenido */
+    flex-direction: column; /* Coloca los elementos en columna */
+    align-items: center; /* Centra los elementos horizontalmente */
+    justify-content: center;
   }
   
   /* Título */
@@ -52,6 +50,7 @@
   /* Contenedor de fecha */
   .input-fecha-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 10px;
     margin-bottom: 20px;
@@ -68,6 +67,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    text-align: center;
   }
   
   .tabla-ventas th, .tabla-ventas td {
