@@ -1,13 +1,14 @@
-"use client";
+"use strict";
 
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import Menu from "../Menu/Menu"; 
 import Categorias from "../Categorías/Categorias";
 import Productos from "../Productos/Productos";
 import Ventas from "../Ventas/Ventas";
 import "./App.css";
-
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -15,17 +16,37 @@ const Login = () => {
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!username || !password) {
       setError("Usuario y contraseña son obligatorios.");
       return;
     }
 
-    setError("");
-    console.log("Acceso concedido:", { username });
+    try {
+      const response = await axios.post("http://localhost:3311/api/Login/SignIn", {
+        user: username,
+        password: password,
+      });
 
-    navigate("/menu");
+      if (response.status === 200) {
+        console.log("Login exitoso:", response.data);
+
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", response.data.user);
+        localStorage.setItem("rol", response.data.rol);
+
+        navigate("/menu");
+      }
+    } catch (error: any) {
+      console.error("Error al iniciar sesión:", error);
+      if (error.response) {
+        setError(error.response.data.message);
+      } else {
+        setError("Error al conectar con el servidor");
+      }
+    }
   };
 
   return (

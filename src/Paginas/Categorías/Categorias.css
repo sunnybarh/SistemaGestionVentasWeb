@@ -1,4 +1,3 @@
-
 body {
   background-color: white;
   margin: 0;
@@ -171,5 +170,51 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
   }
-  
-  
+
+  .tabla-categorias td {
+    vertical-align: middle;
+    color: black;  /* Cambia el color del texto a negro */
+  }
+
+  /* Estilos para los botones */
+.btn-editar {
+  background-color: blue;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.btn-eliminar {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.btn-agregar {
+  background-color: green;  /* Botón verde */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 5px;  /* Margen entre botones */
+  cursor: pointer;
+}
+
+/* Aseguramos que los botones tengan el mismo tamaño */
+.btn-editar,
+.btn-eliminar,
+.btn-agregar {
+  width: 100px;  /* Ancho fijo */
+}
+
+/* Hover effect para los botones */
+.btn-editar:hover,
+.btn-eliminar:hover,
+.btn-agregar:hover {
+  opacity: 0.8;
+}
+
