@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaTags, FaUser, FaBox, FaShoppingCart } from "react-icons/fa";
-import "./Menu.css";
+import "../Menu/Menu.css";
 
 const Menu: React.FC = () => {
   const handleLogout = () => {

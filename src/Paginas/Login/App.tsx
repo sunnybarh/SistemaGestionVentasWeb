@@ -1,34 +1,39 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useState } from "react"
-import "./App.css"
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import Menu from "../Menu/Menu"; 
+import Categorias from "../Categorías/Categorias";
+import Productos from "../Productos/Productos";
+import Ventas from "../Ventas/Ventas";
+import "./App.css";
 
-function App() {
-  const [username, setUsername] = useState<string>("")
-  const [password, setPassword] = useState<string>("")
-  const [error, setError] = useState<string>("")
+
+const Login = () => {
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!username || !password) {
-      setError("Usuario y contraseña son obligatorios.")
-      return
+      setError("Usuario y contraseña son obligatorios.");
+      return;
     }
 
-    // Clear any previous errors
-    setError("")
-    console.log("Acceso concedido:", { username }) // Lógica de tu API aquí
-  }
+    setError("");
+    console.log("Acceso concedido:", { username });
+
+    navigate("/menu");
+  };
 
   return (
     <div className="app-container">
-      {/* Barra de navegación superior */}
       <div className="nav-bar">
         <div className="nav-title"></div>
       </div>
 
-      {/* Contenedor principal centrado */}
       <div className="main-content">
         <div className="login-container">
           <div className="login-header">
@@ -62,10 +67,25 @@ function App() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="app-footer">© 2025 Papelería La Esquina del Papel. Todos los derechos reservados.</footer>
+      <footer className="app-footer">
+        © 2025 Papelería La Esquina del Papel. Todos los derechos reservados.
+      </footer>
     </div>
-  )
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/categoria" element={<Categorias />} />
+        <Route path="/productos" element={<Productos />} />
+        <Route path="/venta" element={<Ventas />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

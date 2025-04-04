@@ -1,0 +1,89 @@
+.menu-header {
+    background-color: #023047;
+    color: white;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+  }
+  
+  /* Estilo general de los botones */
+  .btn-back, .btn-add-product {
+    background-color: #219ebc;  /* Color de fondo azul uniforme */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;  /* Añadimos transición para el hover */
+  }
+  
+  /* Estilo cuando el botón se encuentra en hover */
+  .btn-back:hover, .btn-add-product:hover {
+    background-color: #00408d;  /* Color más oscuro pero uniforme para ambos #00408d */
+  }
+  
+  /* Contenedor de la venta con más espacio */
+  .venta-container {
+    max-width: 900px;
+    margin: 80px auto 50px; /* Aumentado el margen superior */
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Título */
+  .titulo {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #023047;
+    font-weight: bold;
+  }
+  
+  /* Contenedor de fecha */
+  .input-fecha-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .input-fecha-container label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #023047;
+  }
+  
+  /* Estilos de la tabla con bordes */
+  .tabla-ventas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .tabla-ventas th, .tabla-ventas td {
+    border: 2px solid #000; 
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .tabla-ventas th {
+    background-color: #023047;
+    color: white;
+  }
+  
+  /* Footer fijo con fondo azul */
+  .venta-footer {
+    width: 100%;
+    background-color: #023047;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.2rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  
