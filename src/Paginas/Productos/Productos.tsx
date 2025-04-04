@@ -3,8 +3,8 @@
 import React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { FaEdit, FaTrash, FaArrowLeft } from "react-icons/fa"
 import "./Productos.css"
+import { FaEdit, FaTrash } from "react-icons/fa"
 
 // Datos de ejemplo para productos
 const productosIniciales = [
