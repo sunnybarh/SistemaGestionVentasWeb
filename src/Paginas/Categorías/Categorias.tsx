@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./Categorias.css";
+
+
 
 interface Categoria {
   idCategoria: number;
@@ -10,126 +12,129 @@ interface Categoria {
 
 const Categorias: React.FC = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [idCategoria, setIdCategoria] = useState<number | null>(null);
-  const [nombreCategoria, setNombreCategoria] = useState<string>("");
+  const [nombreCategoria, setnombreCategoria] = useState<string>("");
+  const [idCategoria, setIdCategoria] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
   const [, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Obtener las categorías al cargar la página
   useEffect(() => {
-    axios
-      .get("http://localhost:3311/api/categoria/getCategoria")
-      .then((response) => {
-        setCategorias(response.data.result);
-      })
-      .catch((error) => {
-        console.error("Hubo un error al obtener las categorías:", error);
-      });
+    fetchCategorias();
   }, []);
 
-  // Manejo de la inserción
+
+  const fetchCategorias = async () => {
+    try {
+      const response = await axios.get("http://localhost:3311/api/categoria/getCategoria");
+      setCategorias(response.data.result);
+    } catch (error) {
+      console.error("Error al obtener las categorías:", error);
+    }
+  };
+
+
   const handleInsert = async () => {
-    if (!nombreCategoria) {
-      setMessage("El nombre de la categoría es obligatorio.");
+    if ( !nombreCategoria) {
+      setMessage("Todos los campos son obligatorios.");
       return;
     }
-  
+
     try {
-      setLoading(true); 
-  
+      setLoading(true);
       const response = await axios.post("http://localhost:3311/api/categoria/insertCategoria", {
+        idCategoria,
         nombreCategoria,
       });
-  
-      // Verifica que la respuesta sea válida
+
       if (response.status === 201) {
-        setMessage("Categoría agregada exitosamente.");
-        
-        const updatedCategorias = await axios.get("http://localhost:3311/api/categoria/getCategoria");
-        setCategorias(updatedCategorias.data.result); 
-        setNombreCategoria(""); 
+        setMessage("Categoria agregada exitosamente.");
+        await fetchCategorias();
+        clearFields();
       } else {
-   
-        setMessage(response.data.message || "Hubo un problema al agregar la categoría.");
+        setMessage(response.data.message || "Error al agregar el producto.");
       }
     } catch (error) {
       console.error("Error en la solicitud de inserción:", error);
-      setMessage("Hubo un error al insertar la categoría.");
+      setMessage("Hubo un error al insertar el producto.");
     } finally {
       setLoading(false);
     }
   };
-  
-  // Manejo de la edición
+
   const handleEdit = async () => {
-    if (idCategoria && nombreCategoria) {
+    if (nombreCategoria && idCategoria) {
       try {
         const response = await axios.put("http://localhost:3311/api/categoria/updateCategoria", {
           idCategoria,
           nombreCategoria,
         });
+
         setMessage(response.data.message);
-        setCategorias((prevCategorias) =>
-          prevCategorias.map((cat) =>
-            cat.idCategoria === idCategoria ? { ...cat, nombreCategoria } : cat
-          )
-        );
-        setIdCategoria(null); 
-        setNombreCategoria(""); 
+        await fetchCategorias();
+        clearFields();
       } catch (error) {
-        console.error("Hubo un error al actualizar la categoría:", error);
-        setMessage("Hubo un error al actualizar la categoría.");
+        console.error("Error al actualizar el producto:", error);
+        setMessage("Hubo un error al actualizar el producto.");
       }
     }
   };
 
-  // Manejo de la eliminación
+  //funcion para eliminar el producto
   const handleDelete = async (id: number) => {
     try {
       const response = await axios.delete("http://localhost:3311/api/categoria/deleteCategoria", {
         data: { idCategoria: id },
       });
       setMessage(response.data.message);
-      setCategorias((prevCategorias) =>
-        prevCategorias.filter((cat) => cat.idCategoria !== id)
-      );
+      await fetchCategorias();
+      clearFields();//borra los campos
     } catch (error) {
-      console.error("Hubo un error al eliminar la categoría:", error);
-      setMessage("Hubo un error al eliminar la categoría.");
+      console.error("Error al eliminar el producto:", error);
+      setMessage("Hubo un error al eliminar el producto.");
     }
   };
 
-  // Manejo de la selección de una fila para editar
-  const handleRowClick = (id: number, nombre: string) => {
-    setIdCategoria(id);
-    setNombreCategoria(nombre);
+  //mandar a la tabla
+  const handleRowClick = (cat: Categoria) => {
+    
+    setIdCategoria(cat.idCategoria);
+    setnombreCategoria(cat.nombreCategoria);
+  };
+
+  const clearFields = () => {
+    
+    setIdCategoria(0);
+    setnombreCategoria("");
   };
 
   return (
-    <div className="menu-categoria">
-      <header className="menu-cate">
+    <div className="menu-categorias">
+      <header className="menu-prod">
         <button className="btn-back" onClick={() => navigate("/Menu")}>
           Regresar al Menú
         </button>
       </header>
-
-      <div className="categoria-container">
-        <h2 className="titulo">Categorías</h2>
-
+  
+      <div className="categorias-container">
+        <h2 className="titulo">Categorias</h2>
+  
         {message && <p>{message}</p>}
-
+  
         <div className="formulario">
           <div className="input-group">
-            <label>Categoría:</label>
+            <label>ID Categoría:</label>
+            
+          </div>
+  
+          <div className="input-group">
+            <label>Nombre:</label>
             <input
               type="text"
-              placeholder="Ingrese la categoría"
               value={nombreCategoria}
-              onChange={(e) => setNombreCategoria(e.target.value)}
+              onChange={(e) => setnombreCategoria(e.target.value)}
             />
           </div>
-
+  
           <div className="input-group">
             <button className="btn-agregar" onClick={handleInsert}>
               Agregar
@@ -141,26 +146,32 @@ const Categorias: React.FC = () => {
             )}
           </div>
         </div>
-
+  
         <table className="tabla-categorias">
           <thead>
             <tr>
-              <th>ID Categoría</th>
-              <th>Categoría</th>
+              <th>ID</th>
+              <th>Nombre de Categoría</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {categorias.length > 0 ? (
               categorias.map((cat) => (
-                <tr key={cat.idCategoria} onClick={() => handleRowClick(cat.idCategoria, cat.nombreCategoria)}>
+                <tr key={cat.idCategoria}>
                   <td>{cat.idCategoria}</td>
                   <td>{cat.nombreCategoria}</td>
                   <td>
-                    <button className="btn-editar" onClick={() => handleRowClick(cat.idCategoria, cat.nombreCategoria)}>
+                    <button
+                      className="btn-editar"
+                      onClick={() => handleRowClick(cat)}
+                    >
                       Editar
                     </button>
-                    <button className="btn-eliminar" onClick={() => handleDelete(cat.idCategoria)}>
+                    <button
+                      className="btn-eliminar"
+                      onClick={() => handleDelete(cat.idCategoria)}
+                    >
                       Eliminar
                     </button>
                   </td>
@@ -168,18 +179,17 @@ const Categorias: React.FC = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={3}>No hay categorías disponibles.</td>
+                <td colSpan={3}>No hay productos disponibles.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-
-      <footer className="categoria-footer">
+  
+      <footer className="categorias-footer">
         <p>© 2025 Papelería La Esquina del Papel. Todos los derechos reservados.</p>
       </footer>
     </div>
   );
-};
-
+}  
 export default Categorias;

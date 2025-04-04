@@ -230,3 +230,111 @@ button:hover {
     font-size: 1rem;
   }
 }
+
+.menu-producto {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.menu-prod {
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.producto-container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.formulario {
+  margin-bottom: 30px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.btn-agregar,
+.btn-editar,
+.btn-eliminar {
+  padding: 8px 14px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+}
+
+.btn-agregar {
+  background-color: #2196F3;
+}
+
+.btn-editar {
+  background-color: #FF9800;
+}
+
+.btn-eliminar {
+  background-color: #f44336;
+}
+
+.tabla-productos {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-productos th,
+.tabla-productos td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+  color: #333;
+}
+
+.tabla-productos th {
+  background-color: #e0e0e0;
+}
+
+.tabla-productos tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.producto-footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #777;
+}

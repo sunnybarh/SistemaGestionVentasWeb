@@ -1,228 +1,267 @@
-"use client"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./Productos.css";
 
-import React from "react"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import "./Productos.css"
-import { FaEdit, FaTrash } from "react-icons/fa"
+interface Producto {
+  idproducto: number;
+  idCategoria: number;
+  nombreProducto: string;
+  descripcionProducto: string;
+  precioProducto: number;
+  stockProducto: number;
+}
 
-// Datos de ejemplo para productos
-const productosIniciales = [
-  {
-    id: 1,
-    nombre: "Cuaderno Profesional",
-    categoria: "Escritura",
-    precio: 15.99,
-    stock: 20,
-  },
-]
+interface Categoria {
+  idCategoria: number;
+  nombreCategoria: string;
+}
 
 const Productos: React.FC = () => {
-  const navigate = useNavigate()
-  const [productos, setProductos] = useState(productosIniciales)
-  const [nuevoProducto, setNuevoProducto] = useState({
-    nombre: "",
-    categoria: "",
-    precio: "",
-    stock: "",
-  })
-  const [editandoId, setEditandoId] = useState<number | null>(null)
-  const [modoEdicion, setModoEdicion] = useState(false)
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [idproducto, setIdProducto] = useState<number | null>(null);
+  const [idCategoria, setIdCategoria] = useState<number>(0);
+  const [nombreProducto, setNombreProducto] = useState<string>("");
+  const [descripcionProducto, setDescripcionProducto] = useState<string>("");
+  const [precioProducto, setPrecioProducto] = useState<number>(0);
+  const [stockProducto, setStockProducto] = useState<number>(0);
+  const [message, setMessage] = useState<string>("");
+  const [, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setNuevoProducto({
-      ...nuevoProducto,
-      [name]: value,
-    })
-  }
+  useEffect(() => {
+    fetchProductos();
+    fetchCategorias();
+  }, []);
 
-  const handleAgregarProducto = () => {
-    if (!nuevoProducto.nombre || !nuevoProducto.categoria || !nuevoProducto.precio || !nuevoProducto.stock) {
-      alert("Por favor complete todos los campos")
-      return
+  const fetchProductos = async () => {
+    try {
+      const response = await axios.get("http://localhost:3311/api/producto/getProducto");
+      setProductos(response.data.result);
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+    }
+  };
+
+  const fetchCategorias = async () => {
+    try {
+      const response = await axios.get("http://localhost:3311/api/categoria/getCategoria");
+      setCategorias(response.data.result);
+    } catch (error) {
+      console.error("Error al obtener las categorías:", error);
+    }
+  };
+
+  const getNombreCategoria = (idCat: number) => {
+    const cat = categorias.find((c) => c.idCategoria === idCat);
+    return cat ? cat.nombreCategoria : "Desconocida";
+  };
+
+  const handleInsert = async () => {
+    if (!nombreProducto || !descripcionProducto || !precioProducto || !stockProducto || !idCategoria) {
+      setMessage("Todos los campos son obligatorios.");
+      return;
     }
 
-    if (modoEdicion && editandoId !== null) {
-      // Actualizar producto existente
-      setProductos(
-        productos.map((producto) =>
-          producto.id === editandoId
-            ? {
-                ...producto,
-                nombre: nuevoProducto.nombre,
-                categoria: nuevoProducto.categoria,
-                precio: Number.parseFloat(nuevoProducto.precio),
-                stock: Number.parseInt(nuevoProducto.stock),
-              }
-            : producto,
-        ),
-      )
-      setModoEdicion(false)
-      setEditandoId(null)
-    } else {
-      // Agregar nuevo producto
-      const nuevoId = productos.length > 0 ? Math.max(...productos.map((p) => p.id)) + 1 : 1
+    try {
+      setLoading(true);
+      const response = await axios.post("http://localhost:3311/api/producto/insertProducto", {
+        idCategoria,
+        nombreProducto,
+        descripcionProducto,
+        precioProducto,
+        stockProducto,
+      });
 
-      setProductos([
-        ...productos,
-        {
-          id: nuevoId,
-          nombre: nuevoProducto.nombre,
-          categoria: nuevoProducto.categoria,
-          precio: Number.parseFloat(nuevoProducto.precio),
-          stock: Number.parseInt(nuevoProducto.stock),
-        },
-      ])
+      if (response.status === 201) {
+        setMessage("Producto agregado exitosamente.");
+        await fetchProductos();
+        clearFields();
+      } else {
+        setMessage(response.data.message || "Error al agregar el producto.");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud de inserción:", error);
+      setMessage("Hubo un error al insertar el producto.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Limpiar el formulario
-    setNuevoProducto({
-      nombre: "",
-      categoria: "",
-      precio: "",
-      stock: "",
-    })
-  }
+  const handleEdit = async () => {
+    if (idproducto && nombreProducto && descripcionProducto && precioProducto && stockProducto && idCategoria) {
+      try {
+        const response = await axios.put("http://localhost:3311/api/producto/updateProducto", {
+          idproducto,
+          idCategoria,
+          nombreProducto,
+          descripcionProducto,
+          precioProducto,
+          stockProducto,
+        });
 
-  const handleEditarProducto = (id: number) => {
-    const productoAEditar = productos.find((producto) => producto.id === id)
-
-    if (productoAEditar) {
-      setNuevoProducto({
-        nombre: productoAEditar.nombre,
-        categoria: productoAEditar.categoria,
-        precio: productoAEditar.precio.toString(),
-        stock: productoAEditar.stock.toString(),
-      })
-      setEditandoId(id)
-      setModoEdicion(true)
-    }
-  }
-
-  const handleCancelarEdicion = () => {
-    setNuevoProducto({
-      nombre: "",
-      categoria: "",
-      precio: "",
-      stock: "",
-    })
-    setEditandoId(null)
-    setModoEdicion(false)
-  }
-
-  const handleEliminarProducto = (id: number) => {
-    if (window.confirm("¿Estás seguro de eliminar este producto?")) {
-      setProductos(productos.filter((producto) => producto.id !== id))
-
-      // Si estamos editando el producto que se va a eliminar, cancelamos la edición
-      if (editandoId === id) {
-        handleCancelarEdicion()
+        setMessage(response.data.message);
+        await fetchProductos();
+        clearFields();
+      } catch (error) {
+        console.error("Error al actualizar el producto:", error);
+        setMessage("Hubo un error al actualizar el producto.");
       }
     }
-  }
+  };
+
+  //funcion para eliminar el producto
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await axios.delete("http://localhost:3311/api/producto/deleteProducto", {
+        data: { idproducto: id },
+      });
+      setMessage(response.data.message);
+      setProductos((prev) => prev.filter((prod) => prod.idproducto !== id));
+      clearFields();//borra los campos
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+      setMessage("Hubo un error al eliminar el producto.");
+    }
+  };
+
+  //mandar a la tabla
+  const handleRowClick = (prod: Producto) => {
+    setIdProducto(prod.idproducto);
+    setIdCategoria(prod.idCategoria);
+    setNombreProducto(prod.nombreProducto);
+    setDescripcionProducto(prod.descripcionProducto);
+    setPrecioProducto(prod.precioProducto);
+    setStockProducto(prod.stockProducto);
+  };
+
+  const clearFields = () => {
+    setIdProducto(null);
+    setIdCategoria(0);
+    setNombreProducto("");
+    setDescripcionProducto("");
+    setPrecioProducto(0);
+    setStockProducto(0);
+  };
 
   return (
-    <div className="productos-container">
-      {/* HEADER */}
-      <header className="productos-header">
-        <h1>Productos</h1>
-        <button className="volver-menu-button" onClick={() => navigate("/Menu")}>
-           Regresar al Menú
+    <div className="menu-producto">
+      <header className="menu-prod">
+        <button className="btn-back" onClick={() => navigate("/Menu")}>
+          Regresar al Menú
         </button>
       </header>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <div className="productos-content">
-        <h2 className="productos-title">Gestión de Productos - Librería</h2>
+      <div className="producto-container">
+        <h2 className="titulo">Productos</h2>
 
-        {/* Formulario de producto */}
-        <div className="producto-form">
-          <div className="form-group">
-            <input
-              type="text"
-              name="nombre"
-              placeholder="Nombre del producto"
-              value={nuevoProducto.nombre}
-              onChange={handleInputChange}
-            />
-          </div>
+        {message && <p>{message}</p>}
 
-          <div className="form-group">
-            <input
-              type="text"
-              name="categoria"
-              placeholder="Categoría"
-              value={nuevoProducto.categoria}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              name="precio"
-              placeholder="Precio"
-              value={nuevoProducto.precio}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className="form-group">
+        <div className="formulario">
+          <div className="input-group">
+            <label>ID Categoría:</label>
             <input
               type="number"
-              name="stock"
-              placeholder="Stock inicial"
-              value={nuevoProducto.stock}
-              onChange={handleInputChange}
+              value={idCategoria}
+              onChange={(e) => setIdCategoria(Number(e.target.value))}
             />
           </div>
 
-          <button className="agregar-button" onClick={handleAgregarProducto}>
-            {modoEdicion ? "Actualizar Producto" : "Agregar Producto"}
-          </button>
+          <div className="input-group">
+            <label>Nombre:</label>
+            <input
+              type="text"
+              value={nombreProducto}
+              onChange={(e) => setNombreProducto(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Descripción:</label>
+            <input
+              type="text"
+              value={descripcionProducto}
+              onChange={(e) => setDescripcionProducto(e.target.value)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Precio:</label>
+            <input
+              type="number"
+              value={precioProducto}
+              onChange={(e) => setPrecioProducto(parseFloat(e.target.value))}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Stock:</label>
+            <input
+              type="number"
+              value={stockProducto}
+              onChange={(e) => setStockProducto(parseInt(e.target.value))}
+            />
+          </div>
+
+          <div className="input-group">
+            <button className="btn-agregar" onClick={handleInsert}>
+              Agregar
+            </button>
+            {idproducto && (
+              <button className="btn-editar" onClick={handleEdit}>
+                Editar
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Tabla de productos */}
-        <div className="productos-table-container">
-          <table className="productos-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productos.map((producto) => (
-                <tr key={producto.id} className={editandoId === producto.id ? "fila-editando" : ""}>
-                  <td>{producto.nombre}</td>
-                  <td>{producto.categoria}</td>
-                  <td>{producto.precio.toFixed(2)}</td>
-                  <td>{producto.stock}</td>
-                  <td className="acciones-column">
-                    <button className="edit-button" onClick={() => handleEditarProducto(producto.id)}>
-                      <FaEdit />
+        <table className="tabla-productos">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Categoría</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productos.length > 0 ? (
+              productos.map((prod) => (
+                <tr key={prod.idproducto} onClick={() => handleRowClick(prod)}>
+                  <td>{prod.idproducto}</td>
+                  <td>{getNombreCategoria(prod.idCategoria)}</td>
+                  <td>{prod.nombreProducto}</td>
+                  <td>{prod.descripcionProducto}</td>
+                  <td>{prod.precioProducto}</td>
+                  <td>{prod.stockProducto}</td>
+                  <td>
+                    <button className="btn-editar" onClick={() => handleRowClick(prod)}>
+                      Editar
                     </button>
-                    <button className="delete-button" onClick={() => handleEliminarProducto(producto.id)}>
-                      <FaTrash />
+                    <button className="btn-eliminar" onClick={() => handleDelete(prod.idproducto)}>
+                      Eliminar
                     </button>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7}>No hay productos disponibles.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* FOOTER */}
-      <footer className="productos-footer">
+      <footer className="producto-footer">
         <p>© 2025 Papelería La Esquina del Papel. Todos los derechos reservados.</p>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Productos
+export default Productos;
