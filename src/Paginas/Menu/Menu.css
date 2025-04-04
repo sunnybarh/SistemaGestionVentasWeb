@@ -43,7 +43,7 @@
   background-color: #d9534f;
   color: white;
   border: none;
-  padding: 5px 10px;  
+  padding: 10px 20px;  
   font-size: 14px;  
   cursor: pointer;
   border-radius: 8px;
@@ -92,14 +92,9 @@
 
 .menu-button:hover {
   background-color: #176e83;
+  color: white;
   transform: scale(1.1);
 }
-
-.menu-icon {
-  margin-right: 15px;
-  font-size: 2.5rem;
-}
-
 
 .menu-footer {
   width: 100%;

@@ -1,11 +1,20 @@
+
+body {
+  background-color: white;
+  margin: 0;
+  padding: 0;
+}
+
 .categoria-container {
-    max-width: 800px;
-    margin: 0 auto;
-    margin-top: 40px;
-    padding: 100px;
-    background-color: #f9f9f9; 
-    border-radius: 8px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  width: 100%;
+  max-width: none;
+  margin: 80px auto 60px;
+  margin-top: 70px;
+  padding: 30px;
+  background-color: #f9f9f9; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  flex: 1;
   }
   
   .titulo {
@@ -155,14 +164,18 @@
   
   .menu-cate {
     width: 100%;
+    height: 100%;
     background-color: #023047;
     color: white;
     display: flex;
     align-items: center;
     justify-content: flex-start;  
-    padding: 35px 20px;
+    padding: 15px 300px;
     position: relative;
     top: 0;
     left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
+  
   
