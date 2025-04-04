@@ -28,6 +28,7 @@ const Productos: React.FC = () => {
   const [stockProducto, setStockProducto] = useState<number>(0);
   const [message, setMessage] = useState<string>("");
   const [, setLoading] = useState<boolean>(false);
+  const [mostrarCategorias, setMostrarCategorias] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,6 +59,7 @@ const Productos: React.FC = () => {
     return cat ? cat.nombreCategoria : "Desconocida";
   };
 
+  //insertar producto
   const handleInsert = async () => {
     if (!nombreProducto || !descripcionProducto || !precioProducto || !stockProducto || !idCategoria) {
       setMessage("Todos los campos son obligatorios.");
@@ -89,6 +91,7 @@ const Productos: React.FC = () => {
     }
   };
 
+  //editar producto
   const handleEdit = async () => {
     if (idproducto && nombreProducto && descripcionProducto && precioProducto && stockProducto && idCategoria) {
       try {
@@ -111,7 +114,7 @@ const Productos: React.FC = () => {
     }
   };
 
-  //funcion para eliminar el producto
+  //eliminar producto
   const handleDelete = async (id: number) => {
     try {
       const response = await axios.delete("http://localhost:3311/api/producto/deleteProducto", {
@@ -119,14 +122,13 @@ const Productos: React.FC = () => {
       });
       setMessage(response.data.message);
       setProductos((prev) => prev.filter((prod) => prod.idproducto !== id));
-      clearFields();//borra los campos
+      clearFields();
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
       setMessage("Hubo un error al eliminar el producto.");
     }
   };
 
-  //mandar a la tabla
   const handleRowClick = (prod: Producto) => {
     setIdProducto(prod.idproducto);
     setIdCategoria(prod.idCategoria);
@@ -143,6 +145,17 @@ const Productos: React.FC = () => {
     setDescripcionProducto("");
     setPrecioProducto(0);
     setStockProducto(0);
+  };
+
+ 
+  const handleVerCategorias = () => {
+    setMostrarCategorias(!mostrarCategorias);
+  };
+
+
+  const handleCategoriaClick = (categoriaId: number) => {
+    setIdCategoria(categoriaId); // Coloca el idCategoria en el input
+    setMostrarCategorias(false); // Oculta la tabla
   };
 
   return (
@@ -162,11 +175,34 @@ const Productos: React.FC = () => {
           <div className="input-group">
             <label>ID Categoría:</label>
             <input
-              type="number"
-              value={idCategoria}
-              onChange={(e) => setIdCategoria(Number(e.target.value))}
+              type="text"
+              value={getNombreCategoria(idCategoria)} // Muestra el nombre de la categoría
+              readOnly // No editable directamente
             />
+            <button onClick={handleVerCategorias}>
+              {mostrarCategorias ? "Ocultar Categorías" : "Ver Categorías"}
+            </button>
           </div>
+
+          {/* Tabla de categorías visible cuando mostrarCategorias es true */}
+          {mostrarCategorias && (
+            <table className="tabla-categorias">
+              <thead>
+                <tr>
+                  <th>ID Categoría</th>
+                  <th>Nombre Categoría</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categorias.map((categoria) => (
+                  <tr key={categoria.idCategoria} onClick={() => handleCategoriaClick(categoria.idCategoria)}>
+                    <td>{categoria.idCategoria}</td>
+                    <td>{categoria.nombreCategoria}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
           <div className="input-group">
             <label>Nombre:</label>

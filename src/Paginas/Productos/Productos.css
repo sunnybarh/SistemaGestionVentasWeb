@@ -338,3 +338,30 @@ button:hover {
   margin-top: 30px;
   color: #777;
 }
+
+/*tabla de categorias mostrada*/
+.tabla-categorias {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.tabla-categorias th,
+.tabla-categorias td {
+  border: 1px solid black; /* Agregar bordes */
+  padding: 8px;
+  text-align: left;
+  color: black; /* Letras negras */
+}
+
+.tabla-categorias th {
+  background-color: #f2f2f2; /* Color de fondo para las cabeceras */
+}
+
+.tabla-categorias tr:nth-child(even) {
+  background-color: #f9f9f9; /* Color de fondo alternado para las filas */
+}
+
+.tabla-categorias tr:hover {
+  background-color: #e0e0e0; /* Resaltar fila al pasar el mouse */
+}
