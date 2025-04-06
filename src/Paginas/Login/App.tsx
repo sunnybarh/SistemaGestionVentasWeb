@@ -8,6 +8,7 @@ import Menu from "../Menu/Menu";
 import Categorias from "../Categorías/Categorias";
 import Productos from "../Productos/Productos";
 import Ventas from "../Ventas/Ventas";
+import Cliente from "../Cliente/cliente";
 import "./App.css";
 
 const Login = () => {
@@ -104,6 +105,7 @@ function App() {
         <Route path="/categoria" element={<Categorias />} />
         <Route path="/productos" element={<Productos />} />
         <Route path="/venta" element={<Ventas />} />
+        <Route path="/cliente" element={<Cliente/>} />
       </Routes>
     </Router>
   );

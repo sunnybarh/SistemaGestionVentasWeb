@@ -79,7 +79,7 @@ const Categorias: React.FC = () => {
     }
   };
 
-  //funcion para eliminar el producto
+  //funcion para eliminar
   const handleDelete = async (id: number) => {
     try {
       const response = await axios.delete("http://localhost:3311/api/categoria/deleteCategoria", {
@@ -89,8 +89,8 @@ const Categorias: React.FC = () => {
       await fetchCategorias();
       clearFields();//borra los campos
     } catch (error) {
-      console.error("Error al eliminar el producto:", error);
-      setMessage("Hubo un error al eliminar el producto.");
+      console.error("Error al eliminar la categoría:", error);
+      setMessage("Hubo un error al eliminar la categoría.");
     }
   };
 
