@@ -1,96 +1,282 @@
 .menu-header {
-    background-color: #023047;
-    color: white;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-  }
-  
-  /* Estilo general de los botones */
-  .btn-back, .btn-add-product {
-    background-color: #219ebc;  /* Color de fondo azul uniforme */
-    color: white;
-    border: none;
-    padding: 13px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;  /* Añadimos transición para el hover */
-  }
-  
-  /* Estilo cuando el botón se encuentra en hover */
-  .btn-back:hover, .btn-add-product:hover {
-    background-color: #00408d;  /* Color más oscuro pero uniforme para ambos #00408d */
-  }
-  
-  /* Contenedor de la venta con más espacio */
-  .venta-container {
-    max-width: 800px;
-    height: 100vh;
-    margin: 100px auto; /* Espacio superior para el header */
-    padding: 40px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex; /* Flexbox para centrar contenido */
-    flex-direction: column; /* Coloca los elementos en columna */
-    align-items: center; /* Centra los elementos horizontalmente */
-    justify-content: center;
-  }
-  
-  /* Título */
-  .titulo {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 30px;
-    color: #023047;
-    font-weight: bold;
-  }
-  
-  /* Contenedor de fecha */
-  .input-fecha-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .input-fecha-container label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #023047;
-  }
-  
-  /* Estilos de la tabla con bordes */
-  .tabla-ventas {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .tabla-ventas th, .tabla-ventas td {
-    border: 2px solid #000; 
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .tabla-ventas th {
-    background-color: #023047;
-    color: white;
-  }
-  
-  /* Footer fijo con fondo azul */
-  .venta-footer {
-    width: 100%;
-    background-color: #023047;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-size: 1.2rem;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-  }
-  
+  background-color: #023047;
+  color: white;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.btn-back, .btn-add-product {
+  background-color: #219ebc;  
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;  
+}
+
+.btn-back:hover, .btn-add-product:hover {
+  background-color: #00408d;  
+}
+
+.venta-container {
+  max-width: 900px;
+  margin: 80px auto 50px; 
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.titulo {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 30px;
+  color: #023047;
+  font-weight: bold;
+}
+
+.input-fecha-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-fecha-container label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #023047;
+}
+
+.tabla-ventas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tabla-ventas th, .tabla-ventas td {
+  border: 2px solid #000; 
+  padding: 10px;
+  text-align: center;
+}
+
+.tabla-ventas th {
+  background-color: #023047;
+  color: white;
+}
+
+.venta-footer {
+  width: 100%;
+  background-color: #023047;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.2rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.tabla-ventas {
+  width: 100%;
+  border-collapse: collapse;
+  color: black; /* Color de texto negro */
+}
+
+.tabla-ventas th,
+.tabla-ventas td {
+  border: 1px solid black; /* Bordes negros */
+  padding: 8px;
+  text-align: left;
+  color: black; /* Texto negro dentro de celdas */
+}
+
+.tabla-ventas thead {
+  background-color: #f0f0f0; /* Opcional: color de fondo claro para encabezado */
+  color: black; /* Letras del encabezado en negro */
+}
+
+.tabla-ventas tr {
+  border-bottom: 1px solid black; /* Línea negra entre renglones */
+}
+
+.btn-eliminar {
+  color: white;
+  background-color: red;
+  border: 1px solid black;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.venta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-productos-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.btn-ver-productos {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+.btn-ver-productos:hover {
+  background-color: #45a049;
+}
+
+.mini-tabla-container {
+  margin-top: 20px; /* Aumenta el margen superior para separarla más del formulario */
+  max-height: 300px; /* Ajusta el tamaño de la tabla */
+  overflow-y: auto; /* Permite el scroll si hay muchos productos */
+  border: 1px solid #4CAF50; /* Borde verde */
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.tabla-mini {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-mini th, .tabla-mini td {
+  border: 1px solid #4CAF50;
+  padding: 5px;
+  text-align: left;
+}
+
+.tabla-mini th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.tabla-mini td {
+  color: #333;
+}
+
+.tabla-mini tr:hover {
+  background-color: #f1f1f1;
+}
+
+.tabla-ventas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: black; /* Color de texto negro */
+}
+
+.tabla-ventas th, .tabla-ventas td {
+  border: 1px solid black; /* Bordes negros */
+  padding: 10px;
+  text-align: center;
+}
+
+.tabla-ventas th {
+  background-color: #023047;
+  color: white;
+}
+
+.venta-footer {
+  width: 100%;
+  background-color: #023047;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.2rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.btn-eliminar {
+  color: white;
+  background-color: red;
+  border: 1px solid black;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Añadir los estilos para la fila de subtotal y total */
+.subtotal-row, .total-row {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.subtotal-cell, .total-cell {
+  text-align: right;
+}
+
+.subtotal-cell span, .total-cell span {
+  font-size: 1.2rem;
+}
+
+.subtotal-row td, .total-row td {
+  border-top: 2px solid #023047;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.total-row td {
+  border-top: 2px solid #023047;
+  background-color: #ffeb3b; /* Color amarillo para el total */
+  color: #023047;
+}
+
+.venta-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Añadir margen entre celdas */
+.table-footer {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 18px;
+}
+
+.table-footer span {
+  font-weight: bold;
+}
+.totales {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #000;  /* Bordes en negro */
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;  /* Texto negro */
+}
+
+.totales h3 {
+  margin: 10px 0;
+  padding: 5px 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  color: #000;  /* Color del texto negro */
+}
+
+.totales h3:last-child {
+  color: #000;  /* Color del texto negro para el total */
+  font-size: 20px;
+}
+
+.totales h3 span {
+  font-weight: normal;
+  color: #000;  /* Color del texto negro */
+}
