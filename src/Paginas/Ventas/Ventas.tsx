@@ -1,285 +1,353 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Ventas.css";
+import { useNavigate } from "react-router-dom";
+import "./Venta.css";
+
+
+interface Producto {
+  idproducto: number;
+  nombreProducto: string;
+  precioProducto: number;
+  stockProducto: number;
+}
+
+interface ProductoEnVenta {
+  idProducto: number;
+  nombreProducto: string;
+  cantidad: number | string;
+  precio: number | string;
+  subtotal: string;
+}
 
 const Venta: React.FC = () => {
   const navigate = useNavigate();
-  const handleRegresarAlMenu = () => navigate("/Menu");
-
   const [idFactura, setIdFactura] = useState<number | null>(null);
-  const [productos, setProductos] = useState<any[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [nombreProducto, setNombreProducto] = useState("");
   const [precioProducto, setPrecioProducto] = useState<number | string>("");
   const [cantidadProducto, setCantidadProducto] = useState<number | string>("");
-  const [idProductoSeleccionado, setIdProductoSeleccionado] = useState<
-    number | null
-  >(null);
-  const [productosEnVenta, setProductosEnVenta] = useState<any[]>([]);
+  const [idProductoSeleccionado, setIdProductoSeleccionado] = useState<number | null>(null);
+  const [productosEnVenta, setProductosEnVenta] = useState<ProductoEnVenta[]>([]);
   const [fecha, setFecha] = useState<string>("");
   const [clienteId, setClienteId] = useState("CLIENTE FINAL");
+  const [loading, setLoading] = useState(false);
 
-
-  
   useEffect(() => {
-    axios
-      .get("http://localhost:3311/api/Venta/getUltimoIdVenta")
-      .then((res) => {
-        setIdFactura(res.data.idventa);
-      })
-      .catch((err) => console.error("Error al obtener ID de factura:", err));
+    const fetchData = async () => {
+      try {
+        const [ventaResponse] = await Promise.all([
+          axios.get("http://localhost:3311/api/Venta/getUltimoIdVenta")
+        ]);
+        
+        setIdFactura(ventaResponse.data.idventa);
+        
+        // Establecer la fecha de hoy
+        const hoy = new Date();
+        setFecha(hoy.toISOString().split("T")[0]);
+      } catch (error) {
+        console.error("Error al cargar datos iniciales:", error);
+      }
+    };
 
-    // Establecer la fecha de hoy al cargar el componente
-    const hoy = new Date();
-    const fechaFormateada = hoy.toISOString().split("T")[0]; // 'YYYY-MM-DD'
-    setFecha(fechaFormateada);
+    fetchData();
   }, []);
 
-  
-  const handleVerProductos = () => {
-    axios
-      .get("http://localhost:3311/api/producto/getProducto")
-      .then((res) => {
-        setProductos(res.data.result);
-        setMostrarTabla(true); // Mostrar la tabla
-      })
-      .catch((err) => console.error("Error al obtener productos:", err));
+  const handleVerProductos = async () => {
+    try {
+      const response = await axios.get("http://localhost:3311/api/producto/getProducto");
+      setProductos(response.data.result);
+      setMostrarTabla(true);
+    } catch (error) {
+      console.error("Error al obtener productos:", error);
+    }
   };
 
-  
-  const handleSeleccionarProducto = (producto: any) => {
+  const handleSeleccionarProducto = (producto: Producto) => {
     setNombreProducto(producto.nombreProducto);
     setPrecioProducto(producto.precioProducto);
     setIdProductoSeleccionado(producto.idproducto);
-    setMostrarTabla(false); 
+    setMostrarTabla(false);
   };
 
-  // Agregar el producto a la lista de productos en venta
   const handleAgregarProducto = () => {
-    if (idProductoSeleccionado && cantidadProducto && precioProducto) {
-      const subtotal =
-        parseFloat(cantidadProducto.toString()) *
-        parseFloat(precioProducto.toString());
-      const nuevoProducto = {
-        idProducto: idProductoSeleccionado,
-        nombreProducto,
-        cantidad: cantidadProducto,
-        precio: precioProducto,
-        subtotal: subtotal.toFixed(2),
-      };
-      setProductosEnVenta([...productosEnVenta, nuevoProducto]);
-      setNombreProducto("");
-      setCantidadProducto("");
-      setPrecioProducto("");
-      setIdProductoSeleccionado(null);
+    if (!idProductoSeleccionado || !cantidadProducto || !precioProducto) {
+      alert("Por favor complete todos los campos del producto");
+      return;
     }
+
+    const subtotal = Number(cantidadProducto) * Number(precioProducto);
+    const nuevoProducto: ProductoEnVenta = {
+      idProducto: idProductoSeleccionado,
+      nombreProducto,
+      cantidad: cantidadProducto,
+      precio: precioProducto,
+      subtotal: subtotal.toFixed(2),
+    };
+
+    setProductosEnVenta([...productosEnVenta, nuevoProducto]);
+    resetCamposProducto();
   };
 
-  // Eliminar producto de la lista de productos en venta
   const handleEliminarProducto = (index: number) => {
-    const productosActualizados = productosEnVenta.filter(
-      (_, i) => i !== index
-    );
-    setProductosEnVenta(productosActualizados);
+    const nuevosProductos = [...productosEnVenta];
+    nuevosProductos.splice(index, 1);
+    setProductosEnVenta(nuevosProductos);
   };
 
-  // Calcular el total
-  const subtotalTotal = productosEnVenta
-    .reduce((total, producto) => total + parseFloat(producto.subtotal), 0)
-    .toFixed(2);
-  const impuesto = (parseFloat(subtotalTotal) * 0.15).toFixed(2);
-  const totalConImpuesto = (
-    parseFloat(subtotalTotal) + parseFloat(impuesto)
-  ).toFixed(2);
-
-  // Función para procesar el pago y guardar la venta
-  const handlePagarVenta = async () => {
-    try {
-      if (!clienteId) {
-        alert("Por favor ingrese el ID del cliente.");
-        return;
-      }
-      const idCliente = clienteId;
-      const idVenta = idFactura;
-
-      for (const producto of productosEnVenta) {
-        const data = {
-          idventa: idVenta,  
-          idcliente: idCliente,
-          idProducto: producto.idProducto,
-          cantidadVenta: producto.cantidad,
-          totalVenta: totalConImpuesto,  
-        };
-        await axios.post("http://localhost:3311/api/Venta/insertVenta", data);
-      }
-  
-      alert("Venta procesada exitosamente.");
-  
-      // Iincrementar idventa para la próxima venta
-      setIdFactura((prevId) => (prevId ?? 0) + 1);
-    } catch (error) {
-      console.error("Error al procesar la venta:", error);
-      alert("Ocurrió un error al procesar la venta.");
-    }
-
-    setClienteId("");
+  const resetCamposProducto = () => {
     setNombreProducto("");
     setPrecioProducto("");
     setCantidadProducto("");
-    setProductosEnVenta([]);
-    setMostrarTabla(false);
+    setIdProductoSeleccionado(null);
   };
-  
+
+  const calcularTotales = () => {
+    const subtotal = productosEnVenta.reduce(
+      (total, producto) => total + parseFloat(producto.subtotal), 
+      0
+    );
+    const impuesto = subtotal * 0.15;
+    const total = subtotal + impuesto;
+
+    return {
+      subtotal: subtotal.toFixed(2),
+      impuesto: impuesto.toFixed(2),
+      total: total.toFixed(2)
+    };
+  };
+
+  const handlePagarVenta = async () => {
+    if (!clienteId) {
+      alert("Por favor ingrese el ID del cliente");
+      return;
+    }
+
+    if (productosEnVenta.length === 0) {
+      alert("Debe agregar al menos un producto");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { total } = calcularTotales();
+      
+      for (const producto of productosEnVenta) {
+        await axios.post("http://localhost:3311/api/Venta/insertVenta", {
+          idventa: idFactura,
+          idcliente: clienteId,
+          idProducto: producto.idProducto,
+          cantidadVenta: producto.cantidad,
+          totalVenta: total,
+        });
+      }
+
+      alert("Venta procesada exitosamente");
+      setIdFactura(prev => (prev ?? 0) + 1);
+      setProductosEnVenta([]);
+      setClienteId("CLIENTE FINAL");
+    } catch (error) {
+      console.error("Error al procesar venta:", error);
+      alert("Error al procesar la venta");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const { subtotal, impuesto, total } = calcularTotales();
 
   return (
-    <div className="venta-page">
-      <header className="menu-header">
-        <button className="btn-back" onClick={handleRegresarAlMenu}>
-          Regresar al Menú
+    <div className="venta-container">
+      <header className="venta-header">
+        <button className="btn-back" onClick={() => navigate("/Menu")}>
+          &larr; Regresar
         </button>
+        <h1 className="page-title">Registro de Ventas</h1>
+        <div className="header-spacer"></div>
       </header>
-      <div className="venta-container">
-        <h2 className="titulo">Nueva Factura</h2>
 
-        <div className="formulario">
-          <label
-            style={{ color: "black", fontWeight: "bold", display: "block" }}
-          >
-            # Factura: {idFactura ?? "Cargando..."}
-          </label>
-
-          <label htmlFor="cliente-id" style={{ fontWeight: "bold" }}>
-            Id cliente
-          </label>
-          <div className="input-group">
+      <main className="venta-content">
+        <div className="venta-info">
+          <div className="info-group">
+            <span className="info-label">Factura #:</span>
+            <span className="info-value">{idFactura ?? "Cargando..."}</span>
+          </div>
+          
+          <div className="info-group">
+            <label htmlFor="cliente-id" className="info-label">Cliente:</label>
             <input
               id="cliente-id"
               type="text"
-              placeholder="CLIENTE FINAL"
-              value={clienteId} 
-              onChange={(e) => setClienteId(e.target.value)} 
+              className="info-input"
+              value={clienteId}
+              onChange={(e) => setClienteId(e.target.value)}
             />
           </div>
-
-          <div className="input-fecha-container">
-            <label htmlFor="fecha">Fecha:</label>
+          
+          <div className="info-group">
+            <label htmlFor="fecha" className="info-label">Fecha:</label>
             <input
               id="fecha"
               type="date"
-              className="input-fecha"
-              value={fecha} 
-              onChange={(e) => setFecha(e.target.value)} 
+              className="info-input"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
             />
           </div>
-
-          <div className="input-productos-group">
-            <div className="input-group">
-              <input
-                type="text"
-                placeholder="Nombre del producto"
-                value={nombreProducto}
-                readOnly
-              />
-              <button
-                className="btn-ver-productos"
-                onClick={handleVerProductos}
-              >
-                Ver productos
-              </button>
-              <input
-                type="number"
-                placeholder="Cantidad"
-                value={cantidadProducto}
-                onChange={(e) => setCantidadProducto(e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="Precio"
-                value={precioProducto}
-                readOnly
-              />
-            </div>
-          </div>
-
-          <button onClick={handleAgregarProducto}>Agregar Producto</button>
         </div>
 
-        {/* Mostrar la tabla de productos justo debajo del botón */}
-        {mostrarTabla && (
-          <div className="mini-tabla-container">
-            <table className="tabla-mini">
+        <div className="producto-form">
+          <div className="form-row">
+            <div className="input-group">
+              <label>Producto:</label>
+              <div className="producto-selector">
+                <input
+                  type="text"
+                  value={nombreProducto}
+                  readOnly
+                  placeholder="Seleccione un producto"
+                  className="producto-input"
+                />
+                <button 
+                  className="btn-selector"
+                  onClick={handleVerProductos}
+                  type="button"
+                >
+                  {mostrarTabla ? "▲" : "▼"}
+                </button>
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label>Cantidad:</label>
+              <input
+                type="number"
+                min="1"
+                value={cantidadProducto}
+                onChange={(e) => setCantidadProducto(e.target.value)}
+                className="cantidad-input"
+              />
+            </div>
+
+            <div className="input-group">
+              <label>Precio Unitario (S/):</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={precioProducto}
+                readOnly
+                className="precio-input"
+              />
+            </div>
+
+            <button 
+              className="btn-agregar"
+              onClick={handleAgregarProducto}
+            >
+              Agregar
+            </button>
+          </div>
+
+          {mostrarTabla && (
+            <div className="productos-table-container">
+              <table className="productos-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {productos.map((prod) => (
+                    <tr 
+                      key={prod.idproducto} 
+                      onClick={() => handleSeleccionarProducto(prod)}
+                    >
+                      <td>{prod.idproducto}</td>
+                      <td>{prod.nombreProducto}</td>
+                      <td>S/ {prod.precioProducto.toFixed(2)}</td>
+                      <td>{prod.stockProducto}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="venta-detalle">
+          <h3>Detalle de Venta</h3>
+          <div className="table-container">
+            <table className="detalle-table">
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Precio</th>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Precio Unit.</th>
+                  <th>Subtotal</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                {productos.map((prod) => (
-                  <tr
-                    key={prod.idproducto}
-                    onClick={() => handleSeleccionarProducto(prod)}
-                  >
-                    <td>{prod.idproducto}</td>
-                    <td>{prod.nombreProducto}</td>
-                    <td>{prod.precioProducto}</td>
+                {productosEnVenta.length > 0 ? (
+                  productosEnVenta.map((producto, index) => (
+                    <tr key={index}>
+                      <td>{producto.idProducto}</td>
+                      <td>{producto.nombreProducto}</td>
+                      <td>{producto.cantidad}</td>
+                      <td>S/ {Number(producto.precio).toFixed(2)}</td>
+                      <td>S/ {producto.subtotal}</td>
+                      <td>
+                        <button
+                          className="btn-eliminar"
+                          onClick={() => handleEliminarProducto(index)}
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="no-data">
+                      No hay productos agregados
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
-        )}
-
-        {/* Mostrar la tabla con los productos seleccionados */}
-        <table className="tabla-ventas">
-          <thead>
-            <tr>
-              <th>Id del producto</th>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Precio</th>
-              <th>Subtotal</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productosEnVenta.map((producto, index) => {
-              const precio = parseFloat(producto.precio);
-              const precioFormateado = precio.toFixed(2);
-
-              return (
-                <tr key={index}>
-                  <td>{producto.idProducto}</td>
-                  <td>{producto.nombreProducto}</td>
-                  <td>{producto.cantidad}</td>
-                  <td>{precioFormateado}</td>
-                  <td>{producto.subtotal}</td>
-                  <td>
-                    <button
-                      className="btn-eliminar"
-                      onClick={() => handleEliminarProducto(index)}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-
-        <div className="totales">
-          <h3>Total: ${subtotalTotal}</h3>
-          <h3>Impuesto (15%): ${impuesto}</h3>
-          <h3>Total con Impuesto: ${totalConImpuesto}</h3>
         </div>
 
-        <button className="btn-pagar" onClick={handlePagarVenta}>
-          Pagar Venta
-        </button>
-      </div>
+        <div className="venta-totales">
+          <div className="total-group">
+            <span>Subtotal:</span>
+            <span>S/ {subtotal}</span>
+          </div>
+          <div className="total-group">
+            <span>IGV (15%):</span>
+            <span>S/ {impuesto}</span>
+          </div>
+          <div className="total-group total-final">
+            <span>TOTAL:</span>
+            <span>S/ {total}</span>
+          </div>
+        </div>
+
+        <div className="venta-actions">
+          <button 
+            className="btn-pagar"
+            onClick={handlePagarVenta}
+            disabled={loading || productosEnVenta.length === 0}
+          >
+            {loading ? "Procesando..." : "Pagar Venta"}
+          </button>
+        </div>
+      </main>
     </div>
   );
 };

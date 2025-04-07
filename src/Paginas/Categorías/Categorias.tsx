@@ -3,8 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Categorias.css";
 
-
-
 interface Categoria {
   idCategoria: number;
   nombreCategoria: string;
@@ -22,7 +20,6 @@ const Categorias: React.FC = () => {
     fetchCategorias();
   }, []);
 
-
   const fetchCategorias = async () => {
     try {
       const response = await axios.get("http://localhost:3311/api/categoria/getCategoria");
@@ -32,9 +29,8 @@ const Categorias: React.FC = () => {
     }
   };
 
-
   const handleInsert = async () => {
-    if ( !nombreCategoria) {
+    if (!nombreCategoria) {
       setMessage("Todos los campos son obligatorios.");
       return;
     }
@@ -47,15 +43,15 @@ const Categorias: React.FC = () => {
       });
 
       if (response.status === 201) {
-        setMessage("Categoria agregada exitosamente.");
+        setMessage("Categoría agregada exitosamente.");
         await fetchCategorias();
         clearFields();
       } else {
-        setMessage(response.data.message || "Error al agregar el producto.");
+        setMessage(response.data.message || "Error al agregar la categoría.");
       }
     } catch (error) {
       console.error("Error en la solicitud de inserción:", error);
-      setMessage("Hubo un error al insertar el producto.");
+      setMessage("Hubo un error al insertar la categoría.");
     } finally {
       setLoading(false);
     }
@@ -73,13 +69,12 @@ const Categorias: React.FC = () => {
         await fetchCategorias();
         clearFields();
       } catch (error) {
-        console.error("Error al actualizar el producto:", error);
-        setMessage("Hubo un error al actualizar el producto.");
+        console.error("Error al actualizar la categoría:", error);
+        setMessage("Hubo un error al actualizar la categoría.");
       }
     }
   };
 
-  //funcion para eliminar
   const handleDelete = async (id: number) => {
     try {
       const response = await axios.delete("http://localhost:3311/api/categoria/deleteCategoria", {
@@ -87,22 +82,19 @@ const Categorias: React.FC = () => {
       });
       setMessage(response.data.message);
       await fetchCategorias();
-      clearFields();//borra los campos
+      clearFields();
     } catch (error) {
       console.error("Error al eliminar la categoría:", error);
       setMessage("Hubo un error al eliminar la categoría.");
     }
   };
 
-  //mandar a la tabla
   const handleRowClick = (cat: Categoria) => {
-    
     setIdCategoria(cat.idCategoria);
     setnombreCategoria(cat.nombreCategoria);
   };
 
   const clearFields = () => {
-    
     setIdCategoria(0);
     setnombreCategoria("");
   };
@@ -111,85 +103,103 @@ const Categorias: React.FC = () => {
     <div className="menu-categorias">
       <header className="menu-prod">
         <button className="btn-back" onClick={() => navigate("/Menu")}>
-          Regresar al Menú
+          &larr; Regresar
         </button>
+        <h1 className="page-title">Categorías</h1>
+        <div className="header-spacer"></div>
       </header>
   
-      <div className="categorias-container">
-        <h2 className="titulo">Categorias</h2>
+      <div className="contenido">
+        {message && <div className="message-alert">{message}</div>}
   
-        {message && <p>{message}</p>}
+        <div className="form-container">
+          <div className="form-card">
+            <div className="input-group">
+              <label htmlFor="idCategoria">ID Categoría:</label>
+              <input
+                id="idCategoria"
+                type="text"
+                value={idCategoria || ""}
+                onChange={(e) => setIdCategoria(Number(e.target.value))}
+                className="id-input"
+                readOnly
+              />
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="nombreCategoria">Nombre de Categoría:</label>
+              <input
+                id="nombreCategoria"
+                type="text"
+                value={nombreCategoria}
+                onChange={(e) => setnombreCategoria(e.target.value)}
+              />
+            </div>
   
-        <div className="formulario">
-          <div className="input-group">
-            <label>ID Categoría:</label>
-            
-          </div>
-  
-          <div className="input-group">
-            <label>Nombre:</label>
-            <input
-              type="text"
-              value={nombreCategoria}
-              onChange={(e) => setnombreCategoria(e.target.value)}
-            />
-          </div>
-  
-          <div className="input-group">
-            <button className="btn-agregar" onClick={handleInsert}>
-              Agregar
-            </button>
-            {idCategoria && (
-              <button className="btn-editar" onClick={handleEdit}>
-                Editar
+            <div className="form-actions">
+              <button className="btn btn-primary" onClick={handleInsert}>
+                Agregar Categoría
               </button>
-            )}
+              {idCategoria > 0 && (
+                <button className="btn btn-secondary" onClick={handleEdit}>
+                  Guardar Cambios
+                </button>
+              )}
+            </div>
           </div>
         </div>
   
-        <table className="tabla-categorias">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre de Categoría</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categorias.length > 0 ? (
-              categorias.map((cat) => (
-                <tr key={cat.idCategoria}>
-                  <td>{cat.idCategoria}</td>
-                  <td>{cat.nombreCategoria}</td>
-                  <td>
-                    <button
-                      className="btn-editar"
-                      onClick={() => handleRowClick(cat)}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="btn-eliminar"
-                      onClick={() => handleDelete(cat.idCategoria)}
-                    >
-                      Eliminar
-                    </button>
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre de Categoría</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {categorias.length > 0 ? (
+                categorias.map((cat) => (
+                  <tr 
+                    key={cat.idCategoria} 
+                    className={idCategoria === cat.idCategoria ? "active-row" : ""}
+                  >
+                    <td>{cat.idCategoria}</td>
+                    <td>{cat.nombreCategoria}</td>
+                    <td className="actions-cell">
+                      <button
+                        className="btn-action btn-edit"
+                        onClick={() => handleRowClick(cat)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn-action btn-delete"
+                        onClick={() => handleDelete(cat.idCategoria)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="no-data">
+                    No hay categorías disponibles.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3}>No hay productos disponibles.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
   
-      <footer className="categorias-footer">
-        <p>© 2025 Papelería La Esquina del Papel. Todos los derechos reservados.</p>
+      <footer className="app-footer">
+        <p>© {new Date().getFullYear()} Papelería La Esquina del Papel. Todos los derechos reservados.</p>
       </footer>
     </div>
   );
-}  
+};
+
 export default Categorias;
