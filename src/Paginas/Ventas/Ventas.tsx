@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Venta.css";
-
+import { pdf } from "@react-pdf/renderer";
+import { FacturaPDF } from "../../Componentes/FacturaPDF";
+import "./Ventas.css";
 
 interface Producto {
   idproducto: number;
@@ -17,6 +18,10 @@ interface ProductoEnVenta {
   cantidad: number | string;
   precio: number | string;
   subtotal: string;
+}
+
+interface Cliente {
+  idcliente: string;
 }
 
 const Venta: React.FC = () => {
@@ -36,10 +41,7 @@ const Venta: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [ventaResponse] = await Promise.all([
-          axios.get("http://localhost:3311/api/Venta/getUltimoIdVenta")
-        ]);
-        
+        const [ventaResponse] = await Promise.all([axios.get("http://localhost:3311/api/Venta/getUltimoIdVenta")]);
         setIdFactura(ventaResponse.data.idventa);
         
         // Establecer la fecha de hoy
@@ -75,6 +77,7 @@ const Venta: React.FC = () => {
       alert("Por favor complete todos los campos del producto");
       return;
     }
+    
 
     const subtotal = Number(cantidadProducto) * Number(precioProducto);
     const nuevoProducto: ProductoEnVenta = {
@@ -122,16 +125,27 @@ const Venta: React.FC = () => {
       alert("Por favor ingrese el ID del cliente");
       return;
     }
-
+  
     if (productosEnVenta.length === 0) {
       alert("Debe agregar al menos un producto");
       return;
     }
-
+  
     try {
       setLoading(true);
-      const { total } = calcularTotales();
-      
+
+      const response = await axios.get("http://localhost:3311/api/Cliente/getCliente");
+      const clientes: Cliente[] = response.data.result; 
+
+      const clienteEncontrado = clientes.find((cliente: Cliente) => cliente.idcliente === clienteId);
+  
+      if (!clienteEncontrado) {
+        alert("El cliente no se encuentra en el sistema");
+        return;
+      }
+  
+      const { subtotal, impuesto, total } = calcularTotales();
+
       for (const producto of productosEnVenta) {
         await axios.post("http://localhost:3311/api/Venta/insertVenta", {
           idventa: idFactura,
@@ -142,10 +156,34 @@ const Venta: React.FC = () => {
         });
       }
 
-      alert("Venta procesada exitosamente");
-      setIdFactura(prev => (prev ?? 0) + 1);
-      setProductosEnVenta([]);
-      setClienteId("CLIENTE FINAL");
+      const blob = await pdf(
+        <FacturaPDF
+          idFactura={idFactura}
+          clienteId={clienteId}
+          fecha={fecha}
+          productos={productosEnVenta}
+          totales={{ subtotal, impuesto, total }}
+        />
+      ).toBlob();
+  
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `factura_${idFactura}PapeleriaLaEsquinadelPapel.pdf`; 
+        document.body.appendChild(link);
+        link.click();  
+        document.body.removeChild(link);  
+        URL.revokeObjectURL(url);
+  
+        alert("Venta procesada exitosamente");
+        setIdFactura((prev) => (prev ?? 0) + 1);
+        setProductosEnVenta([]);
+        setClienteId(clienteId);
+      } else {
+        console.error("Error: El PDF no se generó correctamente");
+        alert("Hubo un problema al generar el archivo PDF.");
+      }
     } catch (error) {
       console.error("Error al procesar venta:", error);
       alert("Error al procesar la venta");
@@ -153,7 +191,7 @@ const Venta: React.FC = () => {
       setLoading(false);
     }
   };
-
+  
   const { subtotal, impuesto, total } = calcularTotales();
 
   return (
@@ -268,7 +306,7 @@ const Venta: React.FC = () => {
                     >
                       <td>{prod.idproducto}</td>
                       <td>{prod.nombreProducto}</td>
-                      <td>S/ {prod.precioProducto.toFixed(2)}</td>
+                      <td>S/ {(Number(prod.precioProducto) || 0).toFixed(2)}</td>
                       <td>{prod.stockProducto}</td>
                     </tr>
                   ))}
@@ -338,11 +376,11 @@ const Venta: React.FC = () => {
           </div>
         </div>
 
-        <div className="venta-actions">
+        <div className="venta-footer">
           <button 
             className="btn-pagar"
             onClick={handlePagarVenta}
-            disabled={loading || productosEnVenta.length === 0}
+            disabled={loading}
           >
             {loading ? "Procesando..." : "Pagar Venta"}
           </button>

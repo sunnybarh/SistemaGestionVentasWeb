@@ -8,7 +8,7 @@ import Menu from "../Menu/Menu";
 import Categorias from "../Categorías/Categorias";
 import Productos from "../Productos/Productos";
 import Ventas from "../Ventas/Ventas";
-import Cliente from "../Cliente/cliente";
+import Cliente from "../Cliente/Cliente";
 import "./App.css";
 
 const Login = () => {

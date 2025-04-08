@@ -166,6 +166,12 @@
 
 .precio-input {
   background-color: #f8f9fa;
+  color: black;
+}
+
+.producto-input{
+  background-color: #f8f9fa;
+  color: black;
 }
 
 .btn-agregar {
@@ -284,6 +290,7 @@
   padding: 1rem;
   color: #6c757d;
 }
+
 
 
 .venta-totales {
@@ -413,3 +420,4 @@
     padding: 0.75rem;
   }
 }
+

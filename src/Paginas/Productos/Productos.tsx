@@ -320,7 +320,7 @@ const Productos: React.FC = () => {
                       <td>{getNombreCategoria(prod.idCategoria)}</td>
                       <td>{prod.nombreProducto}</td>
                       <td>{prod.descripcionProducto}</td>
-                      <td>{prod.precioProducto.toFixed(2)}</td>
+                      <td>{Number(prod.precioProducto).toFixed(2)}</td>
                       <td>{prod.stockProducto}</td>
                       <td className="actions-cell">
                         <button
