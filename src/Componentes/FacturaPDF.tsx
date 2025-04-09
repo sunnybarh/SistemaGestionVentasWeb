@@ -96,16 +96,14 @@ export const FacturaPDF: React.FC<FacturaProps> = ({
 
       <View style={styles.section}>
         <View style={styles.tableHeader}>
-          <Text style={styles.cell}>Id Producto</Text>
-          <Text style={styles.cell}>Producto</Text>
-          <Text style={styles.cell}>Cant</Text>
+          <Text style={styles.cell}>Productos</Text>
+          <Text style={styles.cell}>Cantidad</Text>
           <Text style={styles.cell}>Precio</Text>
           <Text style={styles.cell}>Subtotal</Text>
         </View>
 
         {productos.map((prod, index) => (
           <View style={styles.row} key={index}>
-            <Text style={styles.cell}>{prod.idProducto}</Text>
             <Text style={styles.cell}>{prod.nombreProducto}</Text>
             <Text style={styles.cell}>{prod.cantidad}</Text>
             <Text style={styles.cell}>L {prod.precio}</Text>

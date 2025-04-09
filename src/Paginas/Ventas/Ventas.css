@@ -9,6 +9,7 @@
   --border-color: #dee2e6;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   --transition: all 0.3s ease;
+  --light-colorbt: #219ebc;
 }
 
 
@@ -94,6 +95,8 @@
   border-radius: 4px;
   font-size: 1rem;
   transition: var(--transition);
+  background-color: var(--light-color);
+  color:var(--dark-color)
 }
 
 .info-input:focus {
@@ -121,14 +124,20 @@
 .input-group {
   display: flex;
   flex-direction: column;
+  
 }
 
 .input-group label {
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--primary-color);
+  
 }
 
+.input-group input{
+  background-color: var(--light-color);
+  color:var(--dark-color)
+}
 .producto-selector {
   display: flex;
 }
@@ -147,7 +156,7 @@
   border: 1px solid var(--border-color);
   border-left: none;
   border-radius: 0 4px 4px 0;
-  background-color: var(--light-color);
+  background-color: var(--light-colorbt);
   cursor: pointer;
   transition: var(--transition);
 }
