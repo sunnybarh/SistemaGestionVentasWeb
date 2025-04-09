@@ -268,7 +268,7 @@ const Venta: React.FC = () => {
             </div>
 
             <div className="input-group">
-              <label>Precio Unitario (S/):</label>
+              <label>Precio Unitario (L):</label>
               <input
                 type="number"
                 min="0"
@@ -306,7 +306,7 @@ const Venta: React.FC = () => {
                     >
                       <td>{prod.idproducto}</td>
                       <td>{prod.nombreProducto}</td>
-                      <td>S/ {(Number(prod.precioProducto) || 0).toFixed(2)}</td>
+                      <td>L {(Number(prod.precioProducto) || 0).toFixed(2)}</td>
                       <td>{prod.stockProducto}</td>
                     </tr>
                   ))}
@@ -337,8 +337,8 @@ const Venta: React.FC = () => {
                       <td>{producto.idProducto}</td>
                       <td>{producto.nombreProducto}</td>
                       <td>{producto.cantidad}</td>
-                      <td>S/ {Number(producto.precio).toFixed(2)}</td>
-                      <td>S/ {producto.subtotal}</td>
+                      <td>L {Number(producto.precio).toFixed(2)}</td>
+                      <td>L {producto.subtotal}</td>
                       <td>
                         <button
                           className="btn-eliminar"
@@ -364,15 +364,15 @@ const Venta: React.FC = () => {
         <div className="venta-totales">
           <div className="total-group">
             <span>Subtotal:</span>
-            <span>S/ {subtotal}</span>
+            <span>L {subtotal}</span>
           </div>
           <div className="total-group">
             <span>IGV (15%):</span>
-            <span>S/ {impuesto}</span>
+            <span>L {impuesto}</span>
           </div>
           <div className="total-group total-final">
             <span>TOTAL:</span>
-            <span>S/ {total}</span>
+            <span>L {total}</span>
           </div>
         </div>
 

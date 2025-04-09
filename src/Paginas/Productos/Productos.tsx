@@ -246,7 +246,7 @@ const Productos: React.FC = () => {
               </div>
 
               <div className="input-group">
-                <label htmlFor="precioProducto">Precio (S/):</label>
+                <label htmlFor="precioProducto">Precio (L):</label>
                 <input
                   id="precioProducto"
                   name="precioProducto"
@@ -303,7 +303,7 @@ const Productos: React.FC = () => {
                   <th>Categoría</th>
                   <th>Nombre</th>
                   <th>Descripción</th>
-                  <th>Precio (S/)</th>
+                  <th>Precio (L)</th>
                   <th>Stock</th>
                   <th>Acciones</th>
                 </tr>
