@@ -44,9 +44,11 @@ const Venta: React.FC = () => {
         const [ventaResponse] = await Promise.all([axios.get("http://localhost:3311/api/Venta/getUltimoIdVenta")]);
         setIdFactura(ventaResponse.data.idventa);
         
-        // Establecer la fecha de hoy
         const hoy = new Date();
-        setFecha(hoy.toISOString().split("T")[0]);
+        const dia = hoy.getDate().toString().padStart(2, '0');
+        const mes = (hoy.getMonth() + 1).toString().padStart(2, '0');  
+        const año = hoy.getFullYear();
+        setFecha(`${año}-${mes}-${dia}`);
       } catch (error) {
         console.error("Error al cargar datos iniciales:", error);
       }
