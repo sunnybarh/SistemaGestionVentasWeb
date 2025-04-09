@@ -1,16 +1,15 @@
 :root {
-  --primary-dark: #002a3a; /* Color azul oscuro para la barra de navegación */
-  --primary-teal: #219ebc; /* Color turquesa para botones y elementos principales */
-  --primary-teal-hover: #219ebc; /* Versión más oscura para hover */
-  --text-light: #ffffff; /* Texto claro para contraste */
-  --text-dark: #333333; /* Texto oscuro */
-  --error-color: #dc3545; /* Color de error */
-  --border-color: #dee2e6; /* Color de bordes */
-  --background-light: #f0f2f5; /* Fondo claro */
-  --input-bg: #ffffff; /* Fondo oscuro para inputs */
+  --primary-dark: #002a3a; 
+  --primary-teal: #219ebc; 
+  --primary-teal-hover: #219ebc; 
+  --text-light: #ffffff; 
+  --text-dark: #333333; 
+  --error-color: #dc3545; 
+  --border-color: #dee2e6; 
+  --background-light: #f0f2f5; 
+  --input-bg: #ffffff; 
 }
 
-/* Estilos para el contenedor principal de la aplicación */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -20,7 +19,7 @@
   padding: 0;
 }
 
-/* Barra de navegación superior */
+
 .nav-bar {
   background-color: #023047;
   color: var(--text-light);
@@ -39,7 +38,6 @@
   font-weight: bold;
 }
 
-/* Contenido principal */
 .main-content {
   display: flex;
   flex-direction: column;
@@ -54,7 +52,7 @@
   position: relative;
 }
 
-/* Contenedor del login */
+
 .login-container {
   width: 100%;
   max-width: 600px;
@@ -142,7 +140,7 @@
   text-align: center;
 }
 
-/* Footer */
+
 .app-footer {
   background-color: var(--primary-dark);
   color: var(--text-light);
@@ -165,7 +163,8 @@
     font-size: 1.2rem;
   }
 }
-/* Relieve en el contenedor del login */
+
+
 .login-container {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
   border-radius: 10px;
@@ -176,13 +175,13 @@
   font-size: 1.2rem;
 }
 
-/* Ajustar el tamaño del contenedor del login */
+
 .login-container {
   max-width: 600px;
   padding: 30px;
 }
 
-/* Ajustar el tamaño de los encabezados del login */
+
 .login-header h1 {
   font-size: 2.5rem;
 }
@@ -191,42 +190,41 @@
   font-size: 1.6rem;
 }
 
-/* Ajustar el tamaño de los inputs del formulario */
+
 .login-form input {
   padding: 14px 18px;
   font-size: 1.1rem;
 }
 
-/* Ajustar el tamaño del botón del formulario */
 .login-form button {
   padding: 14px;
   font-size: 1.1rem;
 }
 
 .login-form button {
-  background-color: #b3d9e0; /* Tono más suave */
-  color: var(--text-dark); /* Texto oscuro para contraste */
+  background-color: #b3d9e0; 
+  color: var(--text-dark); 
 }
 
 .login-form button:hover {
-  background-color: #a0cbd4; /* Tono más oscuro para hover */
+  background-color: #a0cbd4; 
 }
 
 :root {
-  --background-light: #ffffff; /* Fondo completamente blanco */
+  --background-light: #ffffff; 
 }
 
 
 
 .login-form button {
-  background-color: #219ebc; /* Tono solicitado */
-  color: var(--text-light); /* Texto claro para contraste */
+  background-color: #219ebc; 
+  color: var(--text-light); 
 }
 
 .login-form button:hover {
-  background-color: var(--primary-teal-hover); /* Mantener el hover consistente */
+  background-color: var(--primary-teal-hover); 
 }
 
 .login-form input {
-  color: var(--text-dark); /* Texto negro */
+  color: var(--text-dark); 
 }

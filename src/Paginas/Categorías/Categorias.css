@@ -1,4 +1,4 @@
-/* ===== RESET MEJORADO Y ESTILOS BASE ===== */
+
 :root {
   --primary-color: #023047;
   --secondary-color: #219ebc;
@@ -39,8 +39,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   position: relative;
-  padding-top: 60px; /* Para header fijo */
-  padding-bottom: 60px; /* Para footer fijo */
+  padding-top: 60px; 
+  padding-bottom: 60px; 
 }
 
 /* ===== HEADER ===== */
@@ -343,7 +343,7 @@ body {
   justify-content: center;
 }
 
-/* ===== MEDIA QUERIES MEJORADAS ===== */
+
 @media (max-width: 992px) {
   .contenido {
     padding: 1.5rem;
@@ -424,7 +424,7 @@ body {
   }
 }
 
-/* ===== MEJORAS PARA NAVEGADORES ANTIGUOS ===== */
+
 @supports not (display: grid) {
   .form-actions {
     display: -webkit-box;

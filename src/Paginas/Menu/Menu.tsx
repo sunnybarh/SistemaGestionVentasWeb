@@ -5,10 +5,8 @@ import "../Menu/Menu.css";
 
 const Menu: React.FC = () => {
   const handleLogout = () => {
-    // Aquí puedes agregar la lógica para cerrar sesión
     console.log("Cerrar sesión");
-    // Redirigir a la página de inicio de sesión o a otra página
-    window.location.href = "/"; // Cambia la ruta según tu configuración
+    window.location.href = "/"; 
   };
 
   return (
